@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trials of High Lady Holly | Fantasy Birthday Quest</title>
+  <meta name="description" content="A fae-and-dragon themed birthday scavenger hunt quiz forged for High Lady Holly." />
+  <style>
+    :root{
+      --ink:#231b2e;          /* deep night */
+      --glow:#d7c1ff;         /* starlight lilac */
+      --fae:#8df0d6;          /* fae teal */
+      --gold:#f3d28e;         /* warm gold */
+      --rose:#ffb7c5;         /* blush */
+      --parchment:#fbf7ef;    /* parchment */
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: ui-serif, "Iowan Old Style", "Georgia", serif;
+      color:var(--parchment);
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(141,240,214,.15), transparent),
+                  radial-gradient(1000px 600px at 20% 10%, rgba(215,193,255,.15), transparent),
+                  linear-gradient(180deg, #0d0a14, #171225 60%, #0d0a14);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .sky{position:fixed; inset:0; overflow:hidden; pointer-events:none;}
+    .star{position:absolute; width:2px; height:2px; border-radius:50%; background:rgba(255,255,255,.9); opacity:.8;}
+
+    .wrap{max-width:900px; width:100%;}
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.15);
+      box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 0 80px rgba(211,179,255,.05);
+      border-radius:20px; padding:28px; backdrop-filter: blur(6px);
+    }
+
+    h1{
+      font-size: clamp(28px, 4vw, 44px);
+      line-height:1.1; margin:0 0 10px;
+      color: var(--glow);
+      letter-spacing:.5px;
+      text-shadow: 0 0 20px rgba(215,193,255,.35);
+    }
+
+    .subtitle{color: #cfd3ff; opacity:.9; margin:8px 0 20px; font-size: clamp(16px, 2vw, 18px);} 
+
+    .scroll{
+      background: linear-gradient(180deg, rgba(251,247,239,.95), rgba(246,240,223,.9));
+      color:#2c1f14; border-radius: 14px; padding: 18px 20px; border:1px solid #e6dcc7;
+      box-shadow: inset 0 0 60px rgba(0,0,0,.06);
+      font-family: ui-serif, Georgia, serif;
+    }
+
+    p{margin:0 0 10px;}
+
+    .btn{
+      appearance:none; border:none; cursor:pointer; padding:12px 18px; border-radius:12px;
+      font-weight:700; letter-spacing:.2px; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
+      color:#0b0a12; background: linear-gradient(180deg, var(--gold), #e2bd67);
+      box-shadow: 0 8px 22px rgba(243,210,142,.35), inset 0 -2px 0 rgba(0,0,0,.15);
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0); }
+
+    .btn-ghost{
+      background: transparent; color: var(--glow); border:1px solid rgba(255,255,255,.2);
+    }
+
+    .choices{ display:grid; gap:10px; margin-top:14px;}
+
+    .choice{
+      display:flex; align-items:center; gap:10px; padding:12px; border:1px solid rgba(255,255,255,.15);
+      border-radius:12px; background: rgba(255,255,255,.03);
+    }
+    .choice input{ accent-color: var(--fae); transform: scale(1.2);}
+    .choice label{ flex:1; cursor:pointer;}
+
+    .controls{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+
+    .msg{margin-top:14px; border-left:3px solid var(--fae); padding:12px 14px; background: rgba(141,240,214,.08); border-radius:10px;}
+    .msg--error{ border-left-color: #ff8aa1; background: rgba(255,138,161,.08);}
+
+    .footer{opacity:.7; font-size:13px; margin-top:18px;}
+
+    .hidden{display:none !important;}
+
+    /* tiny flourish */
+    .flourish{ color: var(--rose); }
+
+    /* confetti */
+    .confetti{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .confetti i{ position:absolute; width:8px; height:14px; background: linear-gradient(180deg, var(--gold), var(--rose)); transform: translateY(-20vh) rotate(0deg); opacity:.9;}
+    @keyframes fall{ to { transform: translateY(120vh) rotate(720deg);} }
+
+    .center{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true" id="sky"></div>
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="card" id="screen-welcome">
+      <h1>Welcome to your birthday scavenger hunt, <span class="flourish">High Lady Holly</span>!</h1>
+      <div class="subtitle">By starlight and vow, the wards have opened. Answer the Trials to claim your gifts—and sip your Coca‑Cola like the true High Lady you are.</div>
+      <div class="scroll">
+        <p><strong>Proclamation from the Night Court:</strong> On this auspicious day, the city of <em>Velaris</em> hums with quiet joy. A path of silver fire has been laid before you: five questions of lore and legend. Answer true, and the magic deepens. Stumble, and the wards will shimmer—you may try again, brave heart.</p>
+        <p style="margin-top:8px">When you conquer each trial, seek your guide of mortal-and-fae devotion—<strong>Lord Woodward</strong>—for the next stage of your enchanted quest.</p>
+      </div>
+      <div class="controls center">
+        <button class="btn" id="start">Begin the Trials</button>
+      </div>
+      <div class="footer">Blessings from Velaris—may your steps be sure and your heart alight with starfall.</div>
+    </div>
+
+    <div class="card hidden" id="screen-quiz" role="region" aria-live="polite">
+      <h1 id="q-title">The Trials of High Lady Holly</h1>
+      <div class="subtitle" id="q-progress">Trial 1 of 5</div>
+
+      <div class="scroll" id="q-text">Question text...</div>
+
+      <form id="q-form" class="choices" aria-describedby="feedback">
+        <!-- choices injected here -->
+      </form>
+
+      <div class="controls">
+        <button class="btn" id="submit">Cast Your Answer</button>
+        <button class="btn btn-ghost hidden" id="next">Advance to the Next Trial</button>
+      </div>
+
+      <div id="feedback" class="msg hidden" aria-live="polite"></div>
+    </div>
+
+    <div class="card hidden" id="screen-finish">
+      <h1>Velaris Rejoices, High Lady Holly!</h1>
+      <div class="subtitle">You have answered with the courage of a rider and the wisdom of a High Lady.</div>
+      <div class="scroll">
+        <p><strong>Verdict of the Stars:</strong> The wards bow to your will. The Sidra sings. Dragons wheel above the House of Wind.
+        Your next enchantment awaits—turn now to <strong>Lord Woodward</strong> for the next stage of your birthday quest.</p>
+      </div>
+      <div class="controls center">
+        <button class="btn" id="restart">Replay the Trials</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Tiny starfield ---
+    (function stars(){
+      const sky = document.getElementById('sky');
+      const count = 120; // tasteful sparkle
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className='star';
+        s.style.left = Math.random()*100+"%";
+        s.style.top = Math.random()*100+"%";
+        s.style.opacity = (0.5+Math.random()*0.5).toFixed(2);
+        s.style.transform = `scale(${0.6+Math.random()*1.2})`;
+        sky.appendChild(s);
+      }
+    })();
+
+    // --- Quiz data ---
+    const trials = [
+      {
+        text: "In ACOTAR, what is the night-sky event where stars appear to fall like silver fire?",
+        options: ["Starfall","Moonfire Eve","The Night of Dawns","Solstice of the Courts"],
+        correct: 0,
+        success: "Starlight answers starlight. Velaris gleams for you—bravo, High Lady! Turn to Lord Woodward for the next stage.",
+        failure: "The wards shimmer and hold. The stars whisper: not yet. Try again, brave heart."
+      },
+      {
+        text: "What is the name of the soul-deep tie between mates in ACOTAR?",
+        options: ["Soulbind","Cauldron’s Thread","The Mating Bond","Ribbon of Fate"],
+        correct: 2,
+        success: "The Cauldron hums in approval. Your answer rings true. Seek Lord Woodward for your next enchantment.",
+        failure: "Magic curls like mist—close, but not claimed. Gather your will and try again."
+      },
+      {
+        text: "In Fourth Wing, what peril must cadets first survive at Basgiath?",
+        options: ["The Gauntlet","The Threshing","The Parapet","The Riders’ Gauntlet"],
+        correct: 2,
+        success: "You cross the Parapet with sure footing. The wards part—consult Lord Woodward for what comes next.",
+        failure: "A gust from the Abyss rattles the stones. The path is narrow—choose again, rider."
+      },
+      {
+        text: "Which dragon bonds with Violet Sorrengail?",
+        options: ["Sgaeyl","Tairn","Narnys","Xaden"],
+        correct: 1,
+        success: "Tairn rumbles in assent. Your courage would make any rider proud. Turn to Lord Woodward for the next trial’s prize.",
+        failure: "A dragon’s eye narrows in mild offense. Best not guess his name incorrectly—try again."
+      },
+      {
+        text: "Rhysand’s beloved bears which title—now borrowed for Holly today?",
+        options: ["Lady of Moonlight","High Lady of the Night Court","Queen of Velaris","Starborn Consort"],
+        correct: 1,
+        success: "The Night Court bows. High Lady Holly, you have prevailed. Present yourself to Lord Woodward for your next gift.",
+        failure: "Titles carry power. The wrong one falters upon your tongue—seek the true name and try again."
+      }
+    ];
+
+    // --- DOM refs ---
+    const screenWelcome = document.getElementById('screen-welcome');
+    const screenQuiz = document.getElementById('screen-quiz');
+    const screenFinish = document.getElementById('screen-finish');
+    const qText = document.getElementById('q-text');
+    const qForm = document.getElementById('q-form');
+    const qProgress = document.getElementById('q-progress');
+    const feedback = document.getElementById('feedback');
+    const btnStart = document.getElementById('start');
+    const btnSubmit = document.getElementById('submit');
+    const btnNext = document.getElementById('next');
+    const btnRestart = document.getElementById('restart');
+    const confettiBox = document.getElementById('confetti');
+
+    let index = 0;
+
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+
+    function renderQuestion(){
+      const t = trials[index];
+      qText.textContent = t.text;
+      qProgress.textContent = `Trial ${index+1} of ${trials.length}`;
+      feedback.textContent = '';
+      feedback.className = 'msg hidden';
+      btnNext.classList.add('hidden');
+
+      // choices
+      qForm.innerHTML = '';
+      t.options.forEach((opt,i)=>{
+        const id = `opt-${index}-${i}`;
+        const row = document.createElement('div');
+        row.className = 'choice';
+        const input = document.createElement('input');
+        input.type='radio'; input.name='choice'; input.value=i; input.id=id;
+        const label = document.createElement('label'); label.setAttribute('for', id); label.textContent = opt;
+        row.appendChild(input); row.appendChild(label); qForm.appendChild(row);
+      });
+    }
+
+    function celebrate(){
+      // toss some confetti
+      for(let i=0;i<25;i++){
+        const shard = document.createElement('i');
+        shard.style.left = Math.random()*100+"%";
+        shard.style.animation = `fall ${0.9+Math.random()*1.8}s linear ${Math.random()*0.6}s forwards`;
+        shard.style.background = Math.random()>.5 ? 'linear-gradient(180deg, var(--gold), var(--rose))' : 'linear-gradient(180deg, var(--fae), var(--glow))';
+        confettiBox.appendChild(shard);
+        setTimeout(()=> shard.remove(), 3000);
+      }
+    }
+
+    btnStart.addEventListener('click', ()=>{
+      hide(screenWelcome); show(screenQuiz); index=0; renderQuestion();
+    });
+
+    btnSubmit.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const chosen = qForm.querySelector('input[name="choice"]:checked');
+      if(!chosen){
+        feedback.textContent = 'Choose with intention, High Lady. Even magic needs a nudge.';
+        feedback.className = 'msg';
+        return;
+      }
+      const pick = Number(chosen.value);
+      const t = trials[index];
+      const correct = pick === t.correct;
+      if(correct){
+        feedback.textContent = t.success;
+        feedback.className = 'msg';
+        btnNext.classList.remove('hidden');
+        celebrate();
+      } else {
+        feedback.textContent = t.failure;
+        feedback.className = 'msg msg--error';
+        btnNext.classList.add('hidden');
+      }
+    });
+
+    btnNext.addEventListener('click', ()=>{
+      index++;
+      if(index < trials.length){
+        renderQuestion();
+      } else {
+        hide(screenQuiz); show(screenFinish); celebrate(); celebrate();
+      }
+    });
+
+    btnRestart?.addEventListener('click', ()=>{
+      // reset confetti and return to welcome
+      hide(screenFinish); show(screenWelcome);
+    });
+  </script>
+</body>
+</html>
