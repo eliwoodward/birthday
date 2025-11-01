@@ -148,9 +148,12 @@
   </div>
 
   <script>
+  // Wrap everything to avoid timing issues
+  document.addEventListener('DOMContentLoaded', () => {
     // --- Tiny starfield ---
     (function stars(){
       const sky = document.getElementById('sky');
+      if(!sky) return;
       const count = 120; // tasteful sparkle
       for(let i=0;i<count;i++){
         const s = document.createElement('div');
@@ -163,46 +166,38 @@
       }
     })();
 
-    // --- Quiz data ---
-    const trials = [
-      {
-        text: "In ACOTAR, what is the night-sky event where stars appear to fall like silver fire?",
-        options: ["Starfall","Moonfire Eve","The Night of Dawns","Solstice of the Courts"],
-        correct: 0,
-        success: "Starlight answers starlight. Velaris gleams for you—bravo, High Lady! Turn to Lord Woodward for the next stage.",
-        failure: "The wards shimmer and hold. The stars whisper: not yet. Try again, brave heart."
-      },
-      {
-        text: "What is the name of the soul-deep tie between mates in ACOTAR?",
-        options: ["Soulbind","Cauldron’s Thread","The Mating Bond","Ribbon of Fate"],
-        correct: 2,
-        success: "The Cauldron hums in approval. Your answer rings true. Seek Lord Woodward for your next enchantment.",
-        failure: "Magic curls like mist—close, but not claimed. Gather your will and try again."
-      },
-      {
-        text: "In Fourth Wing, what peril must cadets first survive at Basgiath?",
-        options: ["The Gauntlet","The Threshing","The Parapet","The Riders’ Gauntlet"],
-        correct: 2,
-        success: "You cross the Parapet with sure footing. The wards part—consult Lord Woodward for what comes next.",
-        failure: "A gust from the Abyss rattles the stones. The path is narrow—choose again, rider."
-      },
-      {
-        text: "Which dragon bonds with Violet Sorrengail?",
-        options: ["Sgaeyl","Tairn","Narnys","Xaden"],
-        correct: 1,
-        success: "Tairn rumbles in assent. Your courage would make any rider proud. Turn to Lord Woodward for the next trial’s prize.",
-        failure: "A dragon’s eye narrows in mild offense. Best not guess his name incorrectly—try again."
-      },
-      {
-        text: "Rhysand’s beloved bears which title—now borrowed for Holly today?",
-        options: ["Lady of Moonlight","High Lady of the Night Court","Queen of Velaris","Starborn Consort"],
-        correct: 1,
-        success: "The Night Court bows. High Lady Holly, you have prevailed. Present yourself to Lord Woodward for your next gift.",
-        failure: "Titles carry power. The wrong one falters upon your tongue—seek the true name and try again."
-      }
+    // --- Question bank (20) ---
+    const allQuestions = [
+      { text: "In ACOTAR, what is the night-sky event where stars appear to fall like silver fire?", options: ["Starfall","Moonfire Eve","The Night of Dawns","Solstice of the Courts"], correct: 0, success: "Starlight answers starlight. Velaris gleams for you—bravo, High Lady! Turn to Lord Woodward for the next stage.", failure: "The wards shimmer and hold. The stars whisper: not yet. Try again, brave heart." },
+      { text: "What is the name of the soul-deep tie between mates in ACOTAR?", options: ["Soulbind","Cauldron’s Thread","The Mating Bond","Ribbon of Fate"], correct: 2, success: "The Cauldron hums in approval. Your answer rings true. Seek Lord Woodward for your next enchantment.", failure: "Magic curls like mist—close, but not claimed. Gather your will and try again." },
+      { text: "In Fourth Wing, what peril must cadets first survive at Basgiath?", options: ["The Gauntlet","The Threshing","The Parapet","The Riders’ Gauntlet"], correct: 2, success: "You cross the Parapet with sure footing. The wards part—consult Lord Woodward for what comes next.", failure: "A gust from the Abyss rattles the stones. The path is narrow—choose again, rider." },
+      { text: "Which dragon bonds with Violet Sorrengail?", options: ["Sgaeyl","Tairn","Narnys","Xaden"], correct: 1, success: "Tairn rumbles in assent. Your courage would make any rider proud. Turn to Lord Woodward for the next trial’s prize.", failure: "A dragon’s eye narrows in mild offense. Best not guess his name incorrectly—try again." },
+      { text: "Rhysand’s beloved bears which title—now borrowed for Holly today?", options: ["Lady of Moonlight","High Lady of the Night Court","Queen of Velaris","Starborn Consort"], correct: 1, success: "The Night Court bows. High Lady Holly, you have prevailed. Present yourself to Lord Woodward for your next gift.", failure: "Titles carry power. The wrong one falters upon your tongue—seek the true name and try again." },
+      { text: "What is the name of Rhysand’s city, known as the City of Starlight?", options: ["Adriata","Velaris","Hewn City","Sidra’s Haven"], correct: 1, success: "Velaris itself seems to glow brighter. Seek Lord Woodward for your next enchantment.", failure: "The Sidra holds its breath—choose again, High Lady." },
+      { text: "What is the name of Azriel’s shadowsinging blade?", options: ["Truth-Teller","Nightbringer","Illyrian’s Edge","Cauldron’s Whisper"], correct: 0, success: "Shadows purr in approval. Onward—consult Lord Woodward.", failure: "Even the shadows hesitate—try once more." },
+      { text: "What is the name of Feyre’s eldest sister?", options: ["Elain","Nesta","Mor","Viviane"], correct: 1, success: "Nesta would smirk—perhaps. Lord Woodward awaits your prize.", failure: "Sisterly scowls gather—choose again." },
+      { text: "What is Cassian’s role in the Night Court?", options: ["High Lord of the Court of Nightmares","Commander of the Illyrian armies","Spymaster of Velaris","Librarian of the House of Wind"], correct: 1, success: "Wings spread wide in triumph. Report to Lord Woodward.", failure: "A training blade taps your knuckles—wrong. Try again." },
+      { text: "Who is the author of the ACOTAR series?", options: ["Rebecca Yarros","Sarah J. Maas","Leigh Bardugo","Holly Black"], correct: 1, success: "The libraries nod in unison. Proceed to Lord Woodward.", failure: "The stacks shuffle in protest—answer again." },
+      { text: "In Fourth Wing, what is the name of Xaden Riorson’s dragon?", options: ["Tairn","Sgaeyl","Cath","Andarna"], correct: 1, success: "Sgaeyl’s shadow passes overhead—approved. Seek Lord Woodward.", failure: "A warning rumble echoes—choose wisely." },
+      { text: "What is the name of the deadly test where riders must form a dragon bond in Fourth Wing?", options: ["The Parapet","The Threshing","The Gauntlet","The Choosing"], correct: 1, success: "Bonds spark to life. Lord Woodward has the next token.", failure: "The field stays still—try again, rider." },
+      { text: "What rare ability makes Violet valuable to the Riders Quadrant?", options: ["Shadow-wielding","Lightning wielding","Fire magic","Shapeshifting"], correct: 1, success: "Lightning dances along the wards—correct! Report to Lord Woodward.", failure: "Only a crackle of static—try again." },
+      { text: "In ACOTAR, who created the Cauldron?", options: ["The Mother","The Weaver","The Bone Carver","The Suriel"], correct: 0, success: "An ancient warmth settles—well answered. Onward to Lord Woodward.", failure: "Old power frowns—seek the truer name." },
+      { text: "What is the name of the sentient house in Velaris that likes romance novels and makes soup?", options: ["The House of Wind","The Library of Bones","The Sidra Court Manor","The Archive of Stars"], correct: 0, success: "A door opens of its own accord—correct. Find Lord Woodward.", failure: "The hearth flickers in doubt—try again." },
+      { text: "What flower does Feyre paint on the dresser drawer for Elain?", options: ["Rose","Gold lily","Sunflower","Night-blooming jasmine"], correct: 1, success: "Gold lilies bloom across the wood. Seek Lord Woodward.", failure: "The paint won’t take—answer anew." },
+      { text: "What color are Rhysand’s wings when fully extended?", options: ["Silver and gold","Black with hints of violet","Midnight blue and red","Smoky gray"], correct: 1, success: "A sweep of violet-edged night—perfect. To Lord Woodward!", failure: "The sky stays dim—try again." },
+      { text: "What is the largest dragon species in Fourth Wing?", options: ["Daggertail","Scorpiontail","Veninx","Malekite"], correct: 3, success: "A Malekite’s shadow falls—correct. Consult Lord Woodward.", failure: "Something vast huffs in disagreement—answer again." },
+      { text: "What is the magical bargain Feyre makes with Rhysand?", options: ["One Month at the Night Court Each Year","Seven Days Every Solstice","Fight in His War","Be His Spy in Spring Court"], correct: 0, success: "The tattoo curls in approval. Find Lord Woodward.", failure: "Ink prickles with warning—try again." },
+      { text: "What is Xaden Riorson’s rank?", options: ["First Wing Leader of Fourth Wing","Commander of Basgiath","Son of the Vice Commandant","Spymaster of the Aretian Front"], correct: 0, success: "Authority suits you. Lord Woodward awaits.", failure: "Ranks are tricky—choose again." },
+      { text: "What is the name of the river flowing through Velaris?", options: ["The Sidra","The Hewn","The Illyr","The Starfall Run"], correct: 0, success: "The Sidra murmurs your name—correct. Proceed to Lord Woodward.", failure: "The current resists—answer anew." },
+      { text: "How many siphons does Azriel wear?", options: ["5","7","3","8"], correct: 1, success: "Seven lights glimmer at your command. Find Lord Woodward.", failure: "Too dim by far—try again." },
+      { text: "What rare magic appears in only one of every hundred riders in Fourth Wing?", options: ["Shadows","Lightning","Healing","Mind-speaking"], correct: 3, success: "A whisper crosses minds—correct. Seek Lord Woodward.", failure: "Silence answers—choose again." }
     ];
 
-    // --- DOM refs ---
+    // --- State ---
+    let index = 0;
+    let activeTrials = [];
+
+    // --- DOM refs (queried now that DOM is ready) ---
     const screenWelcome = document.getElementById('screen-welcome');
     const screenQuiz = document.getElementById('screen-quiz');
     const screenFinish = document.getElementById('screen-finish');
@@ -216,34 +211,37 @@
     const btnRestart = document.getElementById('restart');
     const confettiBox = document.getElementById('confetti');
 
-    let index = 0;
+    function show(el){ el?.classList.remove('hidden'); }
+    function hide(el){ el?.classList.add('hidden'); }
 
-    function show(el){ el.classList.remove('hidden'); }
-    function hide(el){ el.classList.add('hidden'); }
+    function shuffle(arr){ return arr.map(v=>[Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
 
     function renderQuestion(){
-      const t = trials[index];
+      const t = activeTrials[index];
+      if(!t){ return; }
       qText.textContent = t.text;
-      qProgress.textContent = `Trial ${index+1} of ${trials.length}`;
+      qProgress.textContent = `Trial ${index+1} of ${activeTrials.length}`;
       feedback.textContent = '';
       feedback.className = 'msg hidden';
       btnNext.classList.add('hidden');
 
-      // choices
+      // choices (shuffle options each time)
       qForm.innerHTML = '';
-      t.options.forEach((opt,i)=>{
+      const optIdx = [0,1,2,3];
+      const shuffledIdx = shuffle(optIdx);
+      t.__map = shuffledIdx; // store mapping for grading
+      shuffledIdx.forEach((origIdx,i)=>{
         const id = `opt-${index}-${i}`;
         const row = document.createElement('div');
         row.className = 'choice';
         const input = document.createElement('input');
         input.type='radio'; input.name='choice'; input.value=i; input.id=id;
-        const label = document.createElement('label'); label.setAttribute('for', id); label.textContent = opt;
+        const label = document.createElement('label'); label.setAttribute('for', id); label.textContent = t.options[origIdx];
         row.appendChild(input); row.appendChild(label); qForm.appendChild(row);
       });
     }
 
     function celebrate(){
-      // toss some confetti
       for(let i=0;i<25;i++){
         const shard = document.createElement('i');
         shard.style.left = Math.random()*100+"%";
@@ -254,11 +252,15 @@
       }
     }
 
-    btnStart.addEventListener('click', ()=>{
-      hide(screenWelcome); show(screenQuiz); index=0; renderQuestion();
+    btnStart?.addEventListener('click', ()=>{
+      const shuffled = shuffle(allQuestions);
+      activeTrials = shuffled.slice(0,5);
+      index = 0;
+      hide(screenWelcome); show(screenQuiz);
+      renderQuestion();
     });
 
-    btnSubmit.addEventListener('click', (e)=>{
+    btnSubmit?.addEventListener('click', (e)=>{
       e.preventDefault();
       const chosen = qForm.querySelector('input[name="choice"]:checked');
       if(!chosen){
@@ -267,8 +269,9 @@
         return;
       }
       const pick = Number(chosen.value);
-      const t = trials[index];
-      const correct = pick === t.correct;
+      const t = activeTrials[index];
+      const originalIdx = t.__map ? t.__map[pick] : pick; // translate if shuffled
+      const correct = originalIdx === t.correct;
       if(correct){
         feedback.textContent = t.success;
         feedback.className = 'msg';
@@ -281,9 +284,9 @@
       }
     });
 
-    btnNext.addEventListener('click', ()=>{
+    btnNext?.addEventListener('click', ()=>{
       index++;
-      if(index < trials.length){
+      if(index < activeTrials.length){
         renderQuestion();
       } else {
         hide(screenQuiz); show(screenFinish); celebrate(); celebrate();
@@ -291,9 +294,9 @@
     });
 
     btnRestart?.addEventListener('click', ()=>{
-      // reset confetti and return to welcome
       hide(screenFinish); show(screenWelcome);
     });
-  </script>
+  });
+</script>
 </body>
 </html>
